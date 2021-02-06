@@ -15,7 +15,7 @@ def distinct_requests():
     """
     files = set()
     data = []
-    for entry in PDFRequest.objects.filter(file__isnull=False, status=Status.DONE):
+    for entry in PDFRequest.objects.filter(file__isnull=False, status=Status.DONE).order_by("-created_date"):
         if entry.filename not in files:
             files.add(entry.filename)
             data.append(MenuItem(entry.filename, entry.file.url))
