@@ -14,9 +14,9 @@
     <p class="text-center font-weight-bold">{% trans "Please select which songs would you like to include in the pdf" %}</p>
     <div class="input-group">
       <div class="input-group-prepend">
-        <div class="input-group-text">{% trans "Hledat" %}</div>
+        <div class="input-group-text">{% trans "Search" %}</div>
       </div>
-      <input type="text" class="form-control" id="searchInput" placeholder="Vložte text">
+      <input type="text" class="form-control" id="searchInput" placeholder={% trans "Insert query" %}>
     </div>
     <div class="d-flex flex-row justify-content-center">
     {% for category in categories %}
