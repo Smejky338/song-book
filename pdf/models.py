@@ -88,7 +88,7 @@ class PDFSong(Model):
     """Through table for PDFRequest and Song"""
     song = ForeignKey(Song, on_delete=CASCADE)
     request = ForeignKey(PDFRequest, on_delete=CASCADE)
-    song_number = PositiveIntegerField(validators=[MinValueValidator(1)])
+    song_number = PositiveIntegerField(validators=[MinValueValidator(1)], verbose_name=_("Song number"))
 
     class Meta:
         unique_together = ['song_number', 'request', 'song']
