@@ -5,12 +5,23 @@
 {% block title %} {% trans "PDF Requests" %} {% endblock %}
 {% block header %} {% trans "PDF Requests" %}  {% endblock %}
 
+{% block extra_head %}
+<script defer type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css"/>
+{% endblock %}
+
 {% block framed_body %}
-    <table class="table table-bordered">
+     <div class="input-group">
+      <div class="input-group-prepend">
+        <div class="input-group-text">{% trans "Search" %}</div>
+      </div>
+      <input type="text" class="form-control" id="searchInput" placeholder="{% trans "Insert query" %}">
+    </div>
+    <table id="datatable" class="table table-bordered">
       <thead class="thead-light">
         <tr>
-          <th scope="col">{% trans "Filename" %}</th>
           <th scope="col">{% trans "Name" %}</th>
+{#          <th scope="col">{% trans "Filename" %}</th>#}
           <th scope="col">{% trans "Date Created" %}</th>
           <th scope="col">{% trans "Last updated" %}</th>
           <th scope="col">{% trans "Type" %}</th>
@@ -19,19 +30,20 @@
           <th scope="col">{% trans "Time elapsed" %}</th>
           <th scope="col">{% trans "Category" %}</th>
           <th scope="col">{% trans "Delete file" %}</th>
+          <th scope="col">{% trans "Regenerate" %}</th>
         </tr>
       </thead>
       <tbody>
         {% for request in requests %}
         <tr>
-          <td>
-              {% if request.filename %}
-                {{ request.filename }}
-              {% else %}
-                {% trans "Automatic" %}
-              {% endif %}
-          </td>
           <td>{{ request.name }}</td>
+{#          <td>#}
+{#              {% if request.filename %}#}
+{#                {{ request.filename }}#}
+{#              {% else %}#}
+{#                {% trans "Automatic" %}#}
+{#              {% endif %}#}
+{#          </td>#}
           <td>{{ request.created_date }}</td>
           <td>{{ request.update_date }}</td>
           <td>{{ request.get_type_display }}</td>
@@ -58,8 +70,29 @@
                 {% trans "No file present" %}
               {% endif %}
           </td>
+          <td>
+              {% if request.status != "QU" %}
+                <a href="{% url "pdf:regenerate" pk=request.id %}" class="btn btn-primary">{% trans "Regenerate" %}</a>
+              {% else %}
+                {% trans "Already in queue" %}
+              {% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+    <script type="module">
+    $('#datatable').DataTable({
+        processing: true,
+        dom: 'rtip',
+        {% if request.LANGUAGE_CODE == "cs"  %}
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Czech.json"
+            },
+        {% endif %}
+    });
+    $("#searchInput").on("input", function (event) {
+        table.search($(this).val()).draw();
+    });
+    </script>
 {% endblock %}
